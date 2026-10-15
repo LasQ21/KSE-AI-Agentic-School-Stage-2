@@ -114,7 +114,7 @@ Data findings that shaped the design:
 
 * No source covers 2026-09-07 … 09-15 at raion level, so the fresh test starts right after a 9-day gap. Long-window features are computed from the known part of their window. Before that fix (first version: NaN for the whole window), 24 h AUC on the oblast check was 0.916; after it, 0.940.
 * After a data gap the model needs roughly 3 weeks before its 24-hour forecasts fully recover (oblast check: 24 h AUC below persistence in weeks 1–3, equal in week 4).
-* **Calibration under the regime shift**: 24 h probabilities are too low in Sep–Oct. Recency-weighted training or online recalibration is the obvious next step.
+* **Calibration under the regime shift**: 24 h probabilities are too low in Sep–Oct. Recency weighting (14/45-day half-life) and isotonic/Platt recalibration were tried and **rejected**: none improves Brier in any of 8 test × horizon cases. Recalibration even doubles the error in the first week after the data gap, because it learns the pre-gap regime. Details: [`reports/ablation/calibration.md`](reports/ablation/calibration.md).
 * The 24-hour oblast-level target is almost saturated in Sep–Oct (base rate 0.85), so it says little.
 * Telegram features use keyword and region regexes, not a language model. Mentions are mapped to oblasts, not raions.
 * Possible concept drift from Kyiv's differentiated alert system after 2026-09-06 cannot be separated from the real escalation with the data available.
@@ -129,6 +129,7 @@ Data findings that shaped the design:
 | gaps v1 → v2 | NaN for the whole window → rate over the known part | in the fresh test, 28- and 30-day features were NaN for the whole month after the gap (24 h AUC 0.916 → 0.940) |
 | text v1 → v2 | raw post counts → shares / volume relative to the last 7 days | channels post 2–3× more in autumn; raw counts made the model *worse* |
 | API adapter | raion name from `location_title`, drop duplicated `city` rows, snapshot time from JSON `meta` | real responses differ from the docs; file mtimes change on `git clone` |
+| calibration (rejected) | recency weights, isotonic / Platt recalibration (`--variants`) | 24 h probabilities too low in Sep–Oct; no variant helped (0/8 Brier wins), see `reports/ablation/calibration.md` |
 
 Discarded results are kept in `reports/ablation/`.
 
