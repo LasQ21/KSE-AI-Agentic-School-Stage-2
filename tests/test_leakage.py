@@ -6,6 +6,7 @@ import pytest
 from src.config import HORIZONS
 from src.evaluate import folds, split
 from src.features import build_features
+from src.models import GBM
 
 START = pd.Timestamp("2026-01-01", tz="UTC")
 DAYS = 40
@@ -81,6 +82,31 @@ def test_train_targets_end_before_fold_start(H):
         t_train = train.index.get_level_values("time")
         assert (t_train + pd.Timedelta(hours=H) <= fold_start).all()
         assert (test.index.get_level_values("time") >= fold_start).all()
+
+
+@pytest.mark.parametrize("H", HORIZONS)
+@pytest.mark.parametrize("method", ["isotonic", "platt"])
+def test_recalibration_data_ends_before_fold_start(H, method):
+    end = START + pd.Timedelta(days=DAYS)
+    df = build_features(_activity(1), _activity(2), UNITS, end)
+    features = [c for c in df.columns if not c.startswith("y_")]
+    for fold_start, fold_end in folds(end, test_days=14):
+        train, test = split(df, H, fold_start, fold_end)
+        model = GBM(features, recalibrate=method).fit(train, train[f"y_{H}h"])
+        calib = model.calib_times_
+        y_calib = train.loc[train.index.get_level_values("time") >= model.calib_start_, f"y_{H}h"]
+        # Not vacuous: a calibrator is fitted unless the window has one class (synthetic y_24h == 1).
+        assert (model.calibrator_ is not None) == (y_calib.nunique() == 2)
+        # The calibration window is the tail of the training rows: its targets end before the fold.
+        assert len(calib) > 0 and (calib + pd.Timedelta(hours=H) <= fold_start).all()
+        assert calib.min() >= model.calib_start_ > fold_start - pd.Timedelta(days=8)
+        # Corrupting everything from the fold start on must not change the forecasts.
+        corrupted = df.copy()
+        future = corrupted.index.get_level_values("time") >= fold_start
+        corrupted.loc[future, f"y_{H}h"] = 1 - corrupted.loc[future, f"y_{H}h"]
+        train2, _ = split(corrupted, H, fold_start, fold_end)
+        model2 = GBM(features, recalibrate=method).fit(train2, train2[f"y_{H}h"])
+        np.testing.assert_array_equal(model.predict(test), model2.predict(test))
 
 
 def test_gaps_mask_features_and_targets():

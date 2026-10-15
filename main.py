@@ -32,6 +32,8 @@ def main() -> None:
     ap.add_argument("--horizons", nargs="+", type=int, default=HORIZONS)
     ap.add_argument("--data-end", help="override the data end (UTC), e.g. 2026-09-07")
     ap.add_argument("--out", help="report sub-directory (default: <level>)")
+    ap.add_argument("--variants", action="store_true",
+                    help="also score recency-weighted and recalibrated variants of the main GBM (ablation)")
     args = ap.parse_args()
     if "oblast_csv" in args.sources and args.level != "oblast":
         ap.error("oblast_csv has no raion information: use --level oblast")
@@ -80,6 +82,11 @@ def main() -> None:
     if posts is not None:
         all_features = [c for c in df.columns if c not in NON_FEATURES]
         models["gbm_text"] = lambda: GBM(all_features)
+    if args.variants:
+        main_name, main_features = ("gbm_text", all_features) if posts is not None else ("gbm", base_features)
+        for suffix, kw in [("hl14", {"half_life_days": 14}), ("hl45", {"half_life_days": 45}),
+                           ("iso", {"recalibrate": "isotonic"}), ("platt", {"recalibrate": "platt"})]:
+            models[f"{main_name}_{suffix}"] = lambda kw=kw: GBM(main_features, **kw)
 
     table, preds = backtest(df, models, args.horizons, args.test_days)
     out = REPORTS_DIR / (args.out or args.level)
