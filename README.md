@@ -170,4 +170,18 @@ src/models.py        persistence / seasonal baselines, gradient boosting
 src/evaluate.py      walk-forward folds and metrics
 src/eda.py, src/report.py   plots
 tests/test_leakage.py
+src/site_data.py     builds docs/geo.js and docs/forecast.js (map geometry + hourly forecasts) for the website
+docs/                static website (open docs/index.html via any static server)
+```
+
+## Website
+
+`docs/` is a static site with an interactive map: pick a horizon (1/3/6/24 h) and replay the test month, with the forecast and the actual outcome side by side, by oblast or by raion. Oblast probabilities are the chance that at least one raion is under alert, combined from the raion forecasts as if they were independent (ROC-AUC 0.96, Brier 0.05-0.08 over the test month, see the note on the map). The map shows walk-forward predictions, not live forecasts.
+
+```bash
+# boundaries: OCHA COD-AB Ukraine, CC BY-IGO (ukr_admin1.geojson, ukr_admin2.geojson), not committed
+curl -L -o ukr.zip https://data.humdata.org/dataset/d23f529f-31e4-4021-a65b-13987e5cfb42/resource/681beb86-391b-4a08-8140-ca52e80fcdce/download/ukr_admin_boundaries.geojson.zip
+unzip ukr.zip -d ukr_geo
+.venv/bin/python -m src.site_data --geo ukr_geo --pred reports/raion_fresh
+python3 -m http.server --directory docs 8765
 ```

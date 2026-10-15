@@ -184,3 +184,54 @@ window.I18N_DYN = {
     }
   }
 };
+
+// ---- map section ----
+Object.assign(window.I18N_UK, {
+  m00: "Мапа",
+  m01: "Відтворіть місяць на мапі",
+  m02: "Рухайте повзунок на будь-яку годину між 16 вересня і 15 жовтня. Ліва мапа показує ймовірність тривоги, яку модель дала в ту годину, права — що справді сталося в тому самому вікні. Цих годин модель ніколи не бачила.",
+  m03: "Горизонт",
+  m04: "1 год", m05: "3 год", m06: "6 год", m07: "24 год",
+  m08: "Рівень",
+  m09: "Області",
+  m10: "Райони",
+  m12: "Що передбачила модель",
+  m13: "Що сталося далі",
+  m14: "Низький шанс",
+  m15: "Високий шанс",
+  m16: "Тривога у вікні",
+  m17: "Без тривоги",
+  m18: "Поза моделлю",
+  m19: "Найвищий прогноз у цю годину",
+  m20: "Межі: OCHA COD-AB Ukraine (CC BY-IGO), спрощені. Мапи відтворюють walk-forward прогнози моделі за тестовий місяць. Це не прогнози в реальному часі."
+});
+window.I18N_DYN.en.map = {
+  ariaF: "Map of Ukraine coloured by the forecast chance of an alert",
+  ariaO: "Map of Ukraine coloured by where an alert actually happened",
+  slider: "Forecast hour", play: "Play", pause: "Pause",
+  made: "Forecast made", covers: "covers",
+  nextH: { 1: "the next hour", 3: "the next 3 hours", 6: "the next 6 hours", 24: "the next 24 hours" },
+  chance: "Chance of an alert in", outcome: "Alert in that window", active: "Alert active at that hour",
+  yes: "Yes", no: "No", tagYes: "alert came", tagNo: "quiet",
+  noCov: "Not covered by the model. These areas have too little alert data to forecast.",
+  note: function (h, c) {
+    return "An oblast's chance is the probability that at least one of its raions is under alert, combined from the raion forecasts as if they were independent. Over the test month this scored ROC-AUC " +
+      c.auc.toFixed(3) + " and Brier " + c.brier.toFixed(3) + " at " + h + " h. An alert came in " + Math.round(c.base * 100) +
+      "% of oblast windows and the average forecast was " + Math.round(c.meanp * 100) + "%.";
+  }
+};
+window.I18N_DYN.uk.map = {
+  ariaF: "Мапа України, розфарбована за прогнозованою ймовірністю тривоги",
+  ariaO: "Мапа України, розфарбована за тим, де тривога справді була",
+  slider: "Година прогнозу", play: "Грати", pause: "Пауза",
+  made: "Прогноз зроблено", covers: "охоплює",
+  nextH: { 1: "наступну годину", 3: "наступні 3 години", 6: "наступні 6 годин", 24: "наступні 24 години" },
+  chance: "Ймовірність тривоги на", outcome: "Тривога в цьому вікні", active: "Тривога активна в цю годину",
+  yes: "Так", no: "Ні", tagYes: "була тривога", tagNo: "тихо",
+  noCov: "Поза моделлю. Для цих територій замало даних про тривоги, щоб робити прогноз.",
+  note: function (h, c) {
+    return "Ймовірність для області — це шанс, що хоча б один її район під тривогою; її отримано з районних прогнозів так, ніби вони незалежні. За тестовий місяць це дало ROC-AUC " +
+      c.auc.toFixed(3).replace(".", ",") + " і Brier " + c.brier.toFixed(3).replace(".", ",") + " на горизонті " + h + " год. Тривога була у " + Math.round(c.base * 100) +
+      "% вікон по областях, а середній прогноз становив " + Math.round(c.meanp * 100) + "%.";
+  }
+};

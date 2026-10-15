@@ -17,6 +17,10 @@
   --line: #d8dee7;
   --alert: #e0443a;
   --alert-soft: #f9dad7;
+  --ramp0: #f7e6e1;
+  --ramp1: #ee7f73;
+  --ramp2: #8c1a13;
+  --nocov: #e2e6ed;
   --persist: #6b7789;
   --gbm: #2563eb;
   --gbmt: #5b3fd1;
@@ -34,6 +38,10 @@
     --line: #25314a;
     --alert: #ff6b5e;
     --alert-soft: #3b1f26;
+    --ramp0: #2a2530;
+    --ramp1: #b5453d;
+    --ramp2: #ff9585;
+    --nocov: #1b2438;
     --persist: #94a0b4;
     --gbm: #6c9cff;
     --gbmt: #a591ff;
@@ -48,6 +56,10 @@
   --line: #25314a;
   --alert: #ff6b5e;
   --alert-soft: #3b1f26;
+  --ramp0: #2a2530;
+  --ramp1: #b5453d;
+  --ramp2: #ff9585;
+  --nocov: #1b2438;
   --persist: #94a0b4;
   --gbm: #6c9cff;
   --gbmt: #a591ff;
@@ -126,6 +138,58 @@ section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
 .section-head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 2rem 4rem; align-items: end; margin-bottom: clamp(2rem, 4vw, 3rem); }
 .section-head p { margin: 0; color: var(--ink-2); }
 @media (max-width: 820px) { .section-head { grid-template-columns: 1fr; } }
+
+
+/* map */
+.mapctl { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.2rem 2rem; margin-bottom: 1.4rem; }
+.timebar { display: flex; align-items: center; gap: 1rem; flex: 1 1 22rem; min-width: 0; }
+.timebar input[type=range] { flex: 1; min-width: 0; accent-color: var(--alert); height: 2rem; }
+.play { font: 600 .92rem var(--font); background: var(--ink); color: var(--paper); border: 0; border-radius: 9px; padding: .5rem 1.1rem; cursor: pointer; min-width: 5.5rem; }
+.when { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 1.2rem; max-width: none; }
+.when span { font-weight: 400; color: var(--ink-2); font-size: .95rem; margin-left: .6rem; }
+.maps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 2rem; }
+@media (max-width: 820px) { .maps { grid-template-columns: 1fr; } }
+.mapcol h3 { font-size: 1.05rem; margin-bottom: .5rem; }
+.mapbox { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: .4rem; }
+.umap { display: block; width: 100%; height: auto; touch-action: manipulation; }
+.umap use { stroke: var(--surface); stroke-width: 3; stroke-linejoin: round; cursor: pointer; }
+.umap use.nocov { cursor: default; }
+.umap use.sel { stroke: var(--ink); stroke-width: 9; }
+.umap .borders use { fill: none !important; stroke: var(--ink); stroke-opacity: .5; stroke-width: 5; pointer-events: none; }
+.umap circle { stroke: var(--ink); stroke-width: 5; cursor: pointer; }
+.umap circle.sel { stroke-width: 10; }
+.umap[data-level="oblast"] .lv-raion, .umap[data-level="oblast"] .borders { display: none; }
+.umap[data-level="raion"] .lv-oblast { display: none; }
+.hatch-bg { fill: var(--nocov); }
+.hatch-ln { stroke: var(--line); stroke-width: 3; }
+.legend-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.2rem; font-size: .85rem; color: var(--ink-2); margin-top: .7rem; }
+.rampgrp { display: flex; align-items: center; gap: .6rem; flex: 1 1 auto; }
+.ramp { flex: 0 1 9rem; min-width: 4rem; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--ramp0), var(--ramp1), var(--ramp2)); border: 1px solid var(--line); }
+.swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: .4rem; vertical-align: -2px; border: 1px solid var(--line); }
+.mapdetail { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 2rem 3rem; margin-top: 2rem; align-items: start; }
+@media (max-width: 820px) { .mapdetail { grid-template-columns: 1fr; } }
+.readout { border: 1px solid var(--line); border-radius: 14px; padding: 1.2rem 1.3rem; background: var(--surface); min-height: 11rem; }
+.readout h3 { font-size: 1.3rem; margin-bottom: .8rem; }
+.readout dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .35rem 1.2rem; font-size: .97rem; }
+.readout dt { color: var(--ink-2); }
+.readout dd { margin: 0; font-weight: 600; }
+.readout .big { font-size: 1.6rem; letter-spacing: -0.02em; }
+.readout .yes { color: var(--alert); }
+.rank-title { font-weight: 600; margin: 0 0 .6rem; }
+.rank { list-style: none; margin: 0; padding: 0; }
+.rank li { border-top: 1px solid var(--line); }
+.rank li:last-child { border-bottom: 1px solid var(--line); }
+.rank button { display: grid; grid-template-columns: minmax(0, 1fr) 7rem 3rem 5.5rem; align-items: center; gap: .8rem; width: 100%; background: none; border: 0; padding: .55rem .3rem; font: inherit; font-size: .93rem; color: var(--ink); text-align: left; cursor: pointer; border-radius: 6px; }
+.rank button:hover { background: var(--paper); }
+.rank .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank .bar-r { height: 8px; border-radius: 4px; background: var(--line); position: relative; overflow: hidden; }
+.rank .bar-r i { position: absolute; inset: 0 auto 0 0; width: calc(var(--v) * 100%); background: var(--alert); border-radius: 4px; }
+.rank .pc { text-align: right; font-weight: 600; }
+.rank .tag { font-size: .8rem; color: var(--ink-2); text-align: right; }
+.rank .tag.yes { color: var(--alert); font-weight: 600; }
+@media (max-width: 520px) { .rank button { grid-template-columns: minmax(0, 1fr) 3rem 4.6rem; } .rank .bar-r { display: none; } }
+.mapnote { font-size: .92rem; color: var(--ink-2); margin: 1.6rem 0 0; max-width: 80ch; }
+.mapnote + .mapnote { margin-top: .6rem; }
 
 /* explorer */
 .controls { display: flex; flex-wrap: wrap; gap: 1.2rem 2rem; margin-bottom: 1.2rem; }
@@ -292,6 +356,7 @@ footer p { margin: 0; }
     <a class="brand" href="#top"><i aria-hidden="true"></i>Alert Horizon</a>
     <nav aria-label="Sections">
       <ul>
+        <li><a data-i="m00" href="#map">Map</a></li>
         <li><a data-i="k001" href="#results">Results</a></li>
         <li><a data-i="k002" href="#escalation">September</a></li>
         <li><a data-i="k003" href="#method">Method</a></li>
@@ -321,6 +386,64 @@ footer p { margin: 0; }
     <p data-i="k010" class="note">This is a research project built for KSE AI Agentic School, not a safety system. When there is an alert, follow the official sources.</p>
   </div>
 </div>
+
+<section id="map">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 data-i="m01">Replay the month on the map</h2>
+      <p data-i="m02">Move the slider to any hour between 16 September and 15 October. The left map shows the chance of an alert the model gave at that hour, the right map shows what really happened in the same window. The model had never seen these hours.</p>
+    </div>
+
+    <div class="mapctl">
+      <fieldset>
+        <legend data-i="m03">Look ahead</legend>
+        <div class="seg">
+          <input type="radio" name="mh" id="mh-1" value="1" checked><label for="mh-1" data-i="m04">1 h</label>
+          <input type="radio" name="mh" id="mh-3" value="3"><label for="mh-3" data-i="m05">3 h</label>
+          <input type="radio" name="mh" id="mh-6" value="6"><label for="mh-6" data-i="m06">6 h</label>
+          <input type="radio" name="mh" id="mh-24" value="24"><label for="mh-24" data-i="m07">24 h</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend data-i="m08">Level</legend>
+        <div class="seg">
+          <input type="radio" name="ml" id="ml-oblast" value="oblast" checked><label for="ml-oblast" data-i="m09">Oblasts</label>
+          <input type="radio" name="ml" id="ml-raion" value="raion"><label for="ml-raion" data-i="m10">Raions</label>
+        </div>
+      </fieldset>
+      <div class="timebar">
+        <button class="play" type="button" id="play">Play</button>
+        <input type="range" id="slider" min="0" max="695" value="695" step="1" aria-label="Hour">
+      </div>
+    </div>
+
+    <p class="when" id="when" aria-live="polite"></p>
+
+    <div class="maps">
+      <div class="mapcol">
+        <h3 data-i="m12">What the model predicted</h3>
+        <div class="mapbox"><svg class="umap" id="map-f" data-level="oblast" role="img"></svg></div>
+        <div class="legend-row" aria-hidden="true"><span class="rampgrp"><span data-i="m14">Low chance</span><span class="ramp"></span><span data-i="m15">High chance</span></span><span><i class="swatch" style="background:var(--nocov)"></i><span data-i="m18">Not covered by the model</span></span></div>
+      </div>
+      <div class="mapcol">
+        <h3 data-i="m13">What happened next</h3>
+        <div class="mapbox"><svg class="umap" id="map-o" data-level="oblast" role="img"></svg></div>
+        <div class="legend-row" aria-hidden="true"><span><i class="swatch" style="background:var(--ramp2)"></i><span data-i="m16">Alert in the window</span></span><span><i class="swatch" style="background:var(--ramp0)"></i><span data-i="m17">No alert</span></span></div>
+      </div>
+    </div>
+
+    <div class="mapdetail">
+      <div class="readout" id="readout" aria-live="polite"></div>
+      <div>
+        <p class="rank-title" data-i="m19">Highest forecast at this hour</p>
+        <ul class="rank" id="rank"></ul>
+      </div>
+    </div>
+
+    <p class="mapnote" id="mapnote"></p>
+    <p class="mapnote" data-i="m20">Boundaries: OCHA COD-AB Ukraine (CC BY-IGO), simplified. The maps replay the model's walk-forward predictions for the test month. They are not live forecasts.</p>
+  </div>
+</section>
 
 <section id="results" class="band">
   <div class="wrap">
@@ -614,6 +737,9 @@ for d in raion_fresh raion oblast; do .venv/bin/python -m src.report reports/$d;
 
 <script src="data.js"></script>
 <script src="i18n.js"></script>
+<script src="geo.js"></script>
+<script src="forecast.js"></script>
+<script src="map.js"></script>
 <script>
 (function () {
   var D = window.METRICS;
@@ -765,6 +891,7 @@ for d in raion_fresh raion oblast; do .venv/bin/python -m src.report reports/$d;
     document.querySelectorAll(".lang button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
     btn.textContent = T.copy;
     buildRuler(); buildPairs(); render();
+    if (window.MAP) window.MAP.setLang(lang);
   }
   document.querySelectorAll(".lang button").forEach(function (b) {
     b.addEventListener("click", function () { setLang(b.getAttribute("data-lang"), true); });
